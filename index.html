@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Market - Fresh Groceries</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+            font-size: 2.5em;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+        
+        .menu {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .menu-item {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        
+        .menu-item:hover, .menu-item.active {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #ee5a6f, #ff6b6b);
+        }
+        
+        .menu-item.all { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .menu-item.dairy { background: linear-gradient(45deg, #ffe66d, #ffd93d); color: #333; }
+        .menu-item.bakery { background: linear-gradient(45deg, #d4a574, #c49660); }
+        .menu-item.fruits { background: linear-gradient(45deg, #ff9ff3, #f368e0); }
+        .menu-item.grains { background: linear-gradient(45deg, #a8e6cf, #88d8a3); color: #333; }
+        .menu-item.meat { background: linear-gradient(45deg, #ff6b6b, #ee5a6f); }
+        .menu-item.vegetables { background: linear-gradient(45deg, #95e1d3, #6bcf9f); color: #333; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .section-title {
+            color: #333;
+            font-size: 1.8em;
+            margin: 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #ff6b6b;
+        }
+        
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .product {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border: 3px solid transparent;
+            padding: 20px;
+            border-radius: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .product:hover::before {
+            left: 100%;
+        }
+        
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            border-color: #ff6b6b;
+        }
+        
+        .product.dairy { border-left: 5px solid #ffe66d; }
+        .product.bakery { border-left: 5px solid #d4a574; }
+        .product.fruits { border-left: 5px solid #ff9ff3; }
+        .product.grains { border-left: 5px solid #a8e6cf; }
+        .product.meat { border-left: 5px solid #ff6b6b; }
+        .product.vegetables { border-left: 5px solid #95e1d3; }
+        
+        .product h3 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+        
+        .category {
+            color: #7f8c8d;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .price {
+            color: #27ae60;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        .add-btn {
+            background: linear-gradient(45deg, #27ae60, #229954);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        
+        .add-btn:hover {
+            background: linear-gradient(45deg, #229954, #27ae60);
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .cart {
+            margin-top: 40px;
+            border-top: 4px solid #ff6b6b;
+            padding-top: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 30px;
+            border-radius: 15px;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .cart-total {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #2c3e50;
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border-radius: 10px;
+        }
+        
+        .cart-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .checkout-btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+        }
+        
+        .checkout-btn:hover {
+            background: linear-gradient(45deg, #2980b9, #3498db);
+        }
+        
+        .clear-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+        }
+        
+        .clear-btn:hover {
+            background: linear-gradient(45deg, #c0392b, #e74c3c);
+        }
+        
+        .remove-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1.2em;
+            padding: 30px;
+        }
+        
+        button {
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            color: white;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>🛒 Super Market</h1>
+            <nav class="menu">
+                <a href="/?category=All" class="menu-item all {{ 'active' if selected_category == 'All' else '' }}">All Products</a>
+                {% for cat in categories %}
+                <a href="/?category={{ cat }}" class="menu-item {{ cat.lower() }} {{ 'active' if selected_category == cat else '' }}">{{ cat }}</a>
+                {% endfor %}
+            </nav>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2 class="section-title">Products</h2>
+        <div class="products">
+            {% for product in products %}
+            <div class="product {{ product.category.lower() }}">
+                <h3>{{ product.name }}</h3>
+                <div class="category">{{ product.category }}</div>
+                <div class="price">${{ "%.2f"|format(product.price) }}</div>
+                <button class="add-btn" onclick="window.location.href='/add_to_cart/{{ product.id }}?category={{ selected_category }}'">Add to Cart</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart">
+            <h2 class="section-title">Shopping Cart 🛒</h2>
+            {% if cart_items %}
+                {% for item in cart_items %}
+                <div class="cart-item">
+                    <span><strong>{{ item.product.name }}</strong> x {{ item.quantity }}</span>
+                    <span style="font-weight: bold; color: #27ae60;">${{ "%.2f"|format(item.total) }}</span>
+                    <button class="remove-btn" onclick="window.location.href='/remove_from_cart/{{ item.product.id }}?category={{ selected_category }}'">Remove</button>
+                </div>
+                {% endfor %}
+                <div class="cart-total">Total: ${{ "%.2f"|format(total) }}</div>
+                <div class="cart-buttons">
+                    <button class="checkout-btn" onclick="window.location.href='/checkout'">Checkout</button>
+                    <button class="clear-btn" onclick="window.location.href='/clear_cart'">Clear Cart</button>
+                </div>
+            {% else %}
+                <div class="empty-cart">Your cart is empty. Start shopping! 🛒</div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
